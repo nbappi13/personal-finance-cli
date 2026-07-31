@@ -1,7 +1,43 @@
-"""Personal Finance Calculator CLI
 
-A command-line tool for tracking income, expenses, and analyzing savings habits.
-"""
+def get_valid_amount(prompt_message):
+    while True:
+        raw_input = input(prompt_message).strip()
+
+        # Guard clause 1: empty input check (falsy string)
+        if not raw_input:
+            print("❌ Input cannot be empty. Please try again.")
+            continue
+
+        # clean common user inputs
+        cleaned_input = raw_input.replace("$", "").replace(",", "")
+
+        # guard clause 2: check if numeric (allowing decimal point)
+        # replace the first decimal point to validate floats via isnumeric/isdigit equivalent logic
+        test_str = cleaned_input.replace(".", "", 1)
+        if not test_str.isdigit():
+            print("❌ Invalid entry. Please enter a valid positive number.")
+            continue
+
+        # safe conversion to float
+        amount = float(cleaned_input)
+
+        # guard clause 3
+        if amount <= 0:
+            print("❌ Amount must be greater than 0.")
+            continue
+
+        return amount
+
+
+def handle_income(current_income):
+    # display the current income and update it
+    print(f"\n---INCOME MANAGEMENT---")
+    if current_income > 0:
+        print(f"Currently Monthly Income: {current_income:,.2f}")
+
+    new_income = get_valid_amount("Enter your total monthly income: $")
+    print(f"✅ Total income updated to: ${new_income:,.2f}")
+    return new_income
 
 
 def main():
@@ -31,7 +67,7 @@ def main():
 
         # Command Routing 
         if choice == "1":
-            print("\n[STUB] Income entry selected.")
+            total_income = handle_income(total_income)
             # Will implement handle_income() here next
 
         elif choice == "2":
