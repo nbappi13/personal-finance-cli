@@ -94,6 +94,80 @@ def handle_expense(expenses):
     print(f"✅ Logged ${amount:,.2f} under '{category}' .")
     print(f" Total for '{category}': ${expenses[category]:,.2f}")
 
+
+
+def get_financial_advice(income, total_expenses, savings_rate, expenses):
+
+    """Generates personalized financial feedback using conditional logic and search"""
+    advice_list = []
+
+    # 1. Savings Rate Analysis
+    if savings_rate >= 20.0:
+        advice_list.append("🌟 Excellent! Your are hitting/exceeding the recommended 20% savings target.")
+    elif savings_rate > 0:
+        advice_list.append("⚠️ You have a positive cash flow, but your savins rate below 20%. Try cutting non-essentials.")
+    else:
+        advice_list.append(" 🚨DEFICIT ALERT!: You are spending more than you earn! Immediate expense reductions needed.")
+
+    # 2. Highest Expense Category Search Patten
+    if expenses:
+        top_category = ""
+        max_spent = 0.0
+        for category, amount in expenses.items():
+            if amount > max_spent:
+                max_spent = amount
+                top_category = category
+
+        category_pct_of_income = (max_spent / income) * 100
+        advice_list.append(f"📌 Largest Expense: '{top_category}' (${max_spent:,.2f} / {category_pct_of_income:.1f}% of income).")
+
+        if category_pct_of_income > 40.0:
+            advice_list.append(f"⚠️ Warning: '{top_category}' consumes over 40% of your income. Look into lowering this fixed cost")
+
+    return advice_list
+
+
+
+def handle_summary(income, expenses):
+    """Calculating metrics and printing a clean formated financial report."""
+    # Guard Clause: Income required
+    if income == 0.0:
+        print("\n⚠️ Please set your total monthly income (Option 1) before viewing summary and advice.")
+        return
+
+    total_expenses = sum(expenses.values())
+    net_savings = income - total_expenses
+    savings_rate = (net_savings / income) * 100
+
+    print("\n==============================================")
+    print("         MONTHLY FINANCIAL SUMMARY            ")
+    print("\n==============================================")
+    print(f" Total Monthly Income : ${income:12,.2f} ")
+    print(f" Total Expenses       : $ {total_expenses:12,.2f}")
+    print("----------------------------------------------")
+    if net_savings >= 0:
+        print(f" Net Monthly Savings : ${net_savings:12,.2f}")
+    else:
+        print(f" Monthly Deficit     : ${abs(net_savings):12,.2f}")
+    print(f" Savings Rate            : {savings_rate:12.1f}%")
+    print("\n==============================================")
+
+    # Category Breakdown Table
+    if expenses:
+        print("\n--- CATEGORY BREAKDOWN ---")
+        for category, amount in expenses.items():
+            percentage = (amount / income) * 100
+            print(f" • {category:<20} : ${amount:9,.2f} ({percentage:5.1f}% of income)")
+
+    # Smart Advice Section
+    print("\n--- SMART FINANCIAL ADVICE ---")
+    advice = get_financial_advice(income, total_expenses, savings_rate, expenses)
+    for item in advice:
+        print(f"{item}")
+    print("----------------------------------------------")
+        
+
+
 def main():
     # Application state (Data Store)
     total_income = 0.0
@@ -128,8 +202,7 @@ def main():
             handle_expense(expenses)
 
         elif choice == "3":
-            print("\n[STUB] Summary selected.")
-            # Will implement handle_summary() here next
+            handle_summary(total_income, expenses)
 
         elif choice == "4":
             print("\nThank you for using Personal Finance CLI. Goodbye!")
