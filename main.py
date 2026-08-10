@@ -40,7 +40,7 @@ def get_valid_amount(prompt_message):
 
 def handle_income(current_income):
     """Displaying current income and updating it using get_valid_amount()."""
-    print(f"\n--- INCOME MANAGEMENT ---")
+    print("\n--- INCOME MANAGEMENT ---")
     if current_income > 0:
         print(f"Currently Monthly Income: {current_income:,.2f}")
 
@@ -96,7 +96,7 @@ def handle_expense(expenses):
 
 
 
-def get_financial_advice(income, total_expenses, savings_rate, expenses):
+def get_financial_advice(income, savings_rate, expenses):
 
     """Generates personalized financial feedback using conditional logic and search"""
     advice_list = []
@@ -161,7 +161,7 @@ def handle_summary(income, expenses):
 
     # Smart Advice Section
     print("\n--- SMART FINANCIAL ADVICE ---")
-    advice = get_financial_advice(income, total_expenses, savings_rate, expenses)
+    advice = get_financial_advice(income, savings_rate, expenses)
     for item in advice:
         print(f"{item}")
     print("----------------------------------------------")
@@ -171,8 +171,7 @@ def handle_summary(income, expenses):
 def main():
     # Application state (Data Store)
     total_income = 0.0
-    expenses = {}  # will populate this with category: amount pairs
-
+    expenses = {}  
     print("========================================")
     print("   WELCOME TO PERSONAL FINANCE CLI   ")
     print("========================================\n")
