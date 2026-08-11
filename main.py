@@ -4,24 +4,29 @@
 A command-line tool for tracking income, expenses, and analyzing savings habits.
 """
 
-def get_valid_amount(prompt_message):
-    """Prompting the user for a numeric value and validating it using Phase 1 string methods
+def get_valid_amount(prompt_message: str) -> float:
+    """Prompts the user for a numeric value and validates it.
+    Applies string cleaning, guard clauses, and type conversion to ensure
+    the input is a valid positive float.
 
-    and guard clauses. Ensureing input is positive and numeric.
+    Args:
+        prompt_message (str): The prompt message to display to the user.
+    
+    Returns:
+        float: A validated positive dollar amount
     """
     while True:
         raw_input = input(prompt_message).strip()
 
-        # Guard clause 1: empty input check (falsy string)
+        # Guard clause 1: empty input check 
         if not raw_input:
             print("❌ Input cannot be empty. Please try again.")
             continue
 
-        # clean common user inputs
+        # clean common floating inputs
         cleaned_input = raw_input.replace("$", "").replace(",", "")
 
-        # guard clause 2: checking if numeric (allowing decimal point)
-        # replacing the first decimal point to validate floats via isnumeric/isdigit equivalent logic
+        # Guard Clause 2: Check if string is numeric (allowing one decimal point)
         test_str = cleaned_input.replace(".", "", 1)
         if not test_str.isdigit():
             print("❌ Invalid entry. Please enter a valid positive number.")
@@ -30,7 +35,7 @@ def get_valid_amount(prompt_message):
         # safe conversion to float
         amount = float(cleaned_input)
 
-        # guard clause 3
+        # guard clause 3: logical validation
         if amount <= 0:
             print("❌ Amount must be greater than 0.")
             continue
@@ -38,7 +43,7 @@ def get_valid_amount(prompt_message):
         return amount
 
 
-def handle_income(current_income):
+def handle_income(current_income: float) -> float:
     """Displaying current income and updating it using get_valid_amount()."""
     print("\n--- INCOME MANAGEMENT ---")
     if current_income > 0:
@@ -49,7 +54,7 @@ def handle_income(current_income):
     return new_income
 
 
-def get_expense_category():
+def get_expense_category() -> str:
     """Displays a category menu and returns a clean category name."""
     categories = {
         "1": "Housing & Rent",
@@ -80,7 +85,7 @@ def get_expense_category():
             print("❌ Invalid choice. Please enter a number between 1 and 6")    
 
 
-def handle_expense(expenses):
+def handle_expense(expenses: dict) -> None:
     """Prompts for expense category and amount, then updates the expenses dictionary."""
     category = get_expense_category()
     amount = get_valid_amount(f"Enter amount spent on '{category}': $")
@@ -96,18 +101,31 @@ def handle_expense(expenses):
 
 
 
-def get_financial_advice(income, savings_rate, expenses):
+def get_financial_advice(
+        income: float,
+        savings_rate: float,
+        expenses: dict
+) -> list:
 
     """Generates personalized financial feedback using conditional logic and search"""
     advice_list = []
 
     # 1. Savings Rate Analysis
     if savings_rate >= 20.0:
-        advice_list.append("🌟 Excellent! Your are hitting/exceeding the recommended 20% savings target.")
+        advice_list.append(
+            "🌟 Excellent! Your are hitting or exceeding the recommended" 
+            " 20% savings target."
+        )
     elif savings_rate > 0:
-        advice_list.append("⚠️ You have a positive cash flow, but your savins rate below 20%. Try cutting non-essentials.")
+        advice_list.append(
+            " ⚠️ You have a positive cash flow, but your savins rate is"
+            " below 20%. Try cutting non-essential spending."
+        )
     else:
-        advice_list.append(" 🚨DEFICIT ALERT!: You are spending more than you earn! Immediate expense reductions needed.")
+        advice_list.append(
+            " 🚨DEFICIT ALERT!: You are spending more than you earn!"
+            "Immediate expense reductions needed."
+        )
 
     # 2. Highest Expense Category Search Patten
     if expenses:
@@ -128,7 +146,7 @@ def get_financial_advice(income, savings_rate, expenses):
 
 
 
-def handle_summary(income, expenses):
+def handle_summary(income: float, expenses: dict) -> None:
     """Calculating metrics and printing a clean formated financial report."""
     # Guard Clause: Income required
     if income == 0.0:
@@ -168,8 +186,8 @@ def handle_summary(income, expenses):
         
 
 
-def main():
-    # Application state (Data Store)
+def main() -> None:
+    """Main application loop & command-line router"""
     total_income = 0.0
     expenses = {}  
     print("========================================")
